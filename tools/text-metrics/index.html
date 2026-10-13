@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TextMetrics | 洗練されたリアルタイム文字数カウント＆文章分析</title>
+  <meta name="description" content="リアルタイムで文字数・スペース除外文字数・原稿用紙換算・読了目安時間などを高精度に分析するモダンなWebツールです。">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 背景デコレーション -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="app-container">
+    <!-- ヘッダー -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7V4h16v3"/>
+            <path d="M9 20h6"/>
+            <path d="M12 4v16"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">TextMetrics <span class="badge-pro">PRO</span></h1>
+          <p class="brand-subtitle">文字数カウント ＆ リアルタイム文章分析</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- ポータルへ戻るリンク -->
+        <a href="../../index.html" class="icon-btn" aria-label="ポータルに戻る" title="ポータルに戻る">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </a>
+
+        <!-- 目標文字数設定クイックボタン -->
+        <div class="target-control">
+          <label for="target-input" class="target-label">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="6"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+            目標
+          </label>
+          <input type="number" id="target-input" min="0" step="100" placeholder="なし" class="target-input" aria-label="目標文字数">
+          <span class="target-unit">字</span>
+        </div>
+
+        <!-- テーマ切り替えボタン -->
+        <button id="theme-toggle" class="icon-btn" aria-label="テーマ切り替え" title="ダーク / ライトモード切り替え">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/><path d="M12 20v2"/>
+            <path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/>
+            <path d="M2 12h2"/><path d="M20 12h2"/>
+            <path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 目標プログレスバー（目標が設定されているときのみ表示） -->
+    <div id="target-progress-bar-container" class="target-progress-container hidden">
+      <div class="progress-info">
+        <span class="progress-label" id="progress-text">目標達成度: 0% (0 / 1,000字)</span>
+        <span class="progress-diff" id="progress-diff">残り 1,000字</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- メインコンテンツグリッド -->
+    <main class="main-layout">
+      <!-- 左ペイン：エディタエリア -->
+      <section class="editor-section">
+        <div class="editor-card">
+          <!-- エディタツールバー -->
+          <div class="editor-toolbar">
+            <div class="toolbar-left">
+              <span class="editor-status" id="save-status">
+                <span class="status-dot"></span> 自動保存中
+              </span>
+            </div>
+            <div class="toolbar-actions">
+              <!-- 整形ドロップダウンメニュー -->
+              <div class="dropdown-wrapper">
+                <button id="format-menu-btn" class="toolbar-btn" aria-haspopup="true" aria-expanded="false" title="テキスト整形オプション">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m21 16-4 4-4-4"/>
+                    <path d="M17 20V4"/>
+                    <path d="m3 8 4-4 4 4"/>
+                    <path d="M7 4v16"/>
+                  </svg>
+                  <span>テキスト整形</span>
+                  <svg class="caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div id="format-menu" class="dropdown-menu hidden">
+                  <button type="button" class="dropdown-item" id="btn-clean-smart">
+                    <span class="item-title">✨ スマート整形（おすすめ）</span>
+                    <span class="item-desc">連続空白・連続空行・行末スペースを整理</span>
+                  </button>
+                  <button type="button" class="dropdown-item" id="btn-remove-all-spaces">
+                    <span class="item-title">␣ 全てのスペースを除去</span>
+                    <span class="item-desc">全角・半角スペースを完全に削除</span>
+                  </button>
+                  <button type="button" class="dropdown-item" id="btn-remove-empty-lines">
+                    <span class="item-title">⏎ 空行をすべて削除</span>
+                    <span class="item-desc">改行のみの行を削除して詰める</span>
+                  </button>
+                  <button type="button" class="dropdown-item" id="btn-trim-lines">
+                    <span class="item-title">✂️ 各行の前後の空白を削除</span>
+                    <span class="item-desc">各行のインデントや末尾空白をトリム</span>
+                  </button>
+                  <button type="button" class="dropdown-item" id="btn-to-hankaku-alphanumeric">
+                    <span class="item-title">🔤 英数記号を半角に統一</span>
+                    <span class="item-desc">全角英数を半角に変換</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- サンプルテキスト挿入 -->
+              <button id="btn-sample" class="toolbar-btn secondary" title="テスト用サンプル文章を読み込む">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                <span>サンプル</span>
+              </button>
+
+              <!-- コピーボタン -->
+              <button id="btn-copy" class="toolbar-btn primary" title="テキストをクリップボードにコピー">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                </svg>
+                <span>コピー</span>
+              </button>
+
+              <!-- 全消去ボタン -->
+              <button id="btn-clear" class="toolbar-btn danger" title="テキストをすべて消去">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18"/>
+                  <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                  <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                  <line x1="10" y1="11" x2="10" y2="17"/>
+                  <line x1="14" y1="11" x2="14" y2="17"/>
+                </svg>
+                <span>全消去</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- テキスト入力エリア -->
+          <div class="textarea-wrapper">
+            <textarea
+              id="main-textarea"
+              class="main-textarea"
+              placeholder="ここに文章を入力またはペーストしてください... リアルタイムで文字数や構成を詳細に分析します。"
+              spellcheck="false"
+              autofocus
+            ></textarea>
+          </div>
+
+          <!-- フッターミニ情報 -->
+          <div class="editor-footer">
+            <div class="cursor-info" id="cursor-pos">カーソル位置: 1行目 1文字目</div>
+            <div class="footer-shortcuts">
+              <span class="shortcut-tag"><kbd>Ctrl</kbd>+<kbd>A</kbd> 全選択</span>
+              <span class="shortcut-tag"><kbd>Esc</kbd> メニュー閉じ</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 右ペイン：分析カード・統計エリア -->
+      <section class="analytics-section">
+        <!-- 主要カード：総文字数 & スペース除外 -->
+        <div class="stats-hero-grid">
+          <div class="stat-card hero-card primary-gradient">
+            <div class="card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 7 4 4 20 4 20 7"/>
+                <line x1="9" y1="20" x2="15" y2="20"/>
+                <line x1="12" y1="4" x2="12" y2="20"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">総文字数 <span class="badge-sub">スペース含む</span></span>
+              <div class="stat-value-group">
+                <span class="stat-value" id="count-total">0</span>
+                <span class="stat-unit">文字</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card hero-card emerald-gradient">
+            <div class="card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 14h6"/>
+                <path d="M4 18h10"/>
+                <path d="M14 14h6"/>
+                <path d="M14 18h6"/>
+                <path d="m14 6 4 4"/>
+                <path d="m18 6-4 4"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <span class="stat-label">文字数 <span class="badge-sub">スペース除く</span></span>
+              <div class="stat-value-group">
+                <span class="stat-value" id="count-no-space">0</span>
+                <span class="stat-unit">文字</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2段目：行数・原稿用紙換算・読了時間 -->
+        <div class="stats-secondary-grid">
+          <!-- 原稿用紙換算カード -->
+          <div class="stat-card">
+            <div class="card-header-compact">
+              <div class="card-mini-icon violet">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <path d="M8 13h8"/>
+                  <path d="M8 17h8"/>
+                  <path d="M8 9h2"/>
+                </svg>
+              </div>
+              <span class="card-title">原稿用紙換算</span>
+              <span class="card-badge">400字詰</span>
+            </div>
+            <div class="stat-value-group mt-2">
+              <span class="stat-value lg" id="count-manuscript-sheets">0</span>
+              <span class="stat-unit">枚</span>
+            </div>
+            <div class="stat-detail" id="count-manuscript-detail">
+              0 枚と 0 文字 (0.0 枚分)
+            </div>
+          </div>
+
+          <!-- 読了時間カード -->
+          <div class="stat-card">
+            <div class="card-header-compact">
+              <div class="card-mini-icon amber">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <span class="card-title">読了時間の目安</span>
+              <span class="card-badge">約600字/分</span>
+            </div>
+            <div class="stat-value-group mt-2">
+              <span class="stat-value lg" id="count-read-time">0秒</span>
+            </div>
+            <div class="stat-detail" id="count-speak-time">
+              音読目安 (約350字/分): 0秒
+            </div>
+          </div>
+
+          <!-- 行数カード -->
+          <div class="stat-card">
+            <div class="card-header-compact">
+              <div class="card-mini-icon blue">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <line x1="3" y1="12" x2="21" y2="12"/>
+                  <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+              </div>
+              <span class="card-title">行数</span>
+            </div>
+            <div class="stat-value-group mt-2">
+              <span class="stat-value lg" id="count-lines">0</span>
+              <span class="stat-unit">行</span>
+            </div>
+            <div class="stat-detail" id="count-lines-detail">
+              空行除く: 0 行
+            </div>
+          </div>
+
+          <!-- 単語数 & 段落数カード -->
+          <div class="stat-card">
+            <div class="card-header-compact">
+              <div class="card-mini-icon rose">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+                  <path d="M6 6h10"/>
+                  <path d="M6 10h10"/>
+                </svg>
+              </div>
+              <span class="card-title">単語・段落数</span>
+            </div>
+            <div class="stat-value-group mt-2">
+              <span class="stat-value lg" id="count-words">0</span>
+              <span class="stat-unit">語</span>
+            </div>
+            <div class="stat-detail" id="count-paragraphs">
+              段落数: 0 / UTF-8: 0 Byte
+            </div>
+          </div>
+        </div>
+
+        <!-- 3段目：文字種別の詳細内訳バーチャート -->
+        <div class="stat-card breakdown-card">
+          <div class="card-header-compact">
+            <div class="card-mini-icon cyan">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+            <span class="card-title">文字種類の内訳分析</span>
+          </div>
+
+          <!-- マルチカラープログレスバー -->
+          <div class="breakdown-bar-track" id="breakdown-bar">
+            <div class="bar-segment hiragana" id="bar-hiragana" style="width: 0%;" title="ひらがな"></div>
+            <div class="bar-segment katakana" id="bar-katakana" style="width: 0%;" title="カタカナ"></div>
+            <div class="bar-segment kanji" id="bar-kanji" style="width: 0%;" title="漢字"></div>
+            <div class="bar-segment latin" id="bar-latin" style="width: 0%;" title="英数字"></div>
+            <div class="bar-segment other" id="bar-other" style="width: 0%;" title="記号・空白・その他"></div>
+          </div>
+
+          <!-- 内訳凡例バッジ -->
+          <div class="breakdown-legend">
+            <div class="legend-item">
+              <span class="legend-indicator hiragana"></span>
+              <span class="legend-name">ひらがな</span>
+              <span class="legend-count" id="count-hiragana">0 (0%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator katakana"></span>
+              <span class="legend-name">カタカナ</span>
+              <span class="legend-count" id="count-katakana">0 (0%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator kanji"></span>
+              <span class="legend-name">漢字</span>
+              <span class="legend-count" id="count-kanji">0 (0%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator latin"></span>
+              <span class="legend-name">英数字</span>
+              <span class="legend-count" id="count-latin">0 (0%)</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-indicator other"></span>
+              <span class="legend-name">記号・空白</span>
+              <span class="legend-count" id="count-other">0 (0%)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- フッター -->
+    <footer class="app-footer">
+      <p>TextMetrics — 高精度リアルタイムテキストアナライザー &bull; 入力内容はブラウザ内にのみ安全に保存されます</p>
+    </footer>
+  </div>
+
+  <!-- トースト通知 -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite">
+    <span class="toast-icon">✓</span>
+    <span class="toast-msg" id="toast-msg">クリップボードにコピーしました</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
