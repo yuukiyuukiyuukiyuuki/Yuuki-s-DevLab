@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <h4>ご連絡方法</h4>
       <p>GitHubのIssuesまたはプルリクエストにて受け付けております。</p>
       <div style="margin-top: 16px;">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="tool-link-btn" style="text-align: center;">
+        <a href="https://github.com/yuukiyuukiyuukiyuuki/Yuuki-s-DevLab" target="_blank" rel="noopener noreferrer" class="tool-link-btn" style="text-align: center;">
           GitHub リポジトリへ移動
         </a>
       </div>
