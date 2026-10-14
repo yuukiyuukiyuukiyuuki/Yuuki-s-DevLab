@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ImageCraft | ブラウザ完結の高速画像リサイズ＆WebP一括変換ツール</title>
+  <meta name="description" content="サーバー送信なしで100%ブラウザ内で画像を高速軽量化・リサイズ・WebP/PNG/JPEG変換。EXIFメタデータも自動削除してプライバシーを保護します。">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- JSZip CDN (一括ZIPダウンロード用、オフライン時は順次DLに自動フォールバック) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+</head>
+<body>
+  <!-- 背景アンビエントグロー -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <div class="app-container">
+    <!-- ヘッダー -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <circle cx="9" cy="9" r="2"/>
+            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="brand-title">ImageCraft <span class="badge-pro">PRO</span></h1>
+          <p class="brand-subtitle">ブラウザ完結・高速画像リサイズ ＆ WebP一括変換</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- ポータルへ戻るボタン -->
+        <a href="../../index.html" class="icon-btn" aria-label="ポータルに戻る" title="ポータルに戻る">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+        </a>
+
+        <!-- テーマ切り替えボタン -->
+        <button id="theme-toggle" class="icon-btn" aria-label="テーマ切り替え" title="ダーク / ライトモード切り替え">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/><path d="M12 20v2"/>
+            <path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/>
+            <path d="M2 12h2"/><path d="M20 12h2"/>
+            <path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- プライバシー保護バッジ -->
+    <div class="privacy-banner">
+      <span class="lock-icon">🔒</span>
+      <span><strong>完全クライアントサイド処理</strong>：画像データはお使いの端末（ブラウザ）内でのみ安全に変換され、外部サーバーへ送信されることは一切ありません。</span>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <main class="main-layout">
+      <!-- 1. ドロップゾーン（画像追加エリア） -->
+      <section class="dropzone-section">
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="file-input" multiple accept="image/*" class="file-input" aria-label="画像ファイルを選択">
+          <div class="dropzone-inner">
+            <div class="dropzone-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <h2 class="dropzone-title">ここに画像をドラッグ＆ドロップ</h2>
+            <p class="dropzone-desc">または <span class="browse-link">ファイルを選択</span>（複数選択・一括変換に対応）</p>
+            <div class="dropzone-formats">
+              <span class="fmt-tag">PNG</span>
+              <span class="fmt-tag">JPEG</span>
+              <span class="fmt-tag">WebP</span>
+              <span class="fmt-tag">GIF</span>
+              <span class="fmt-tag">BMP</span>
+              <span class="fmt-tag">AVIF</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. 設定パネル（フォーマット、画質、リサイズ） -->
+      <section class="settings-card">
+        <div class="settings-header">
+          <h3 class="settings-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            変換・リサイズ設定
+          </h3>
+          <span class="settings-note">すべての画像にリアルタイム適用されます</span>
+        </div>
+
+        <div class="settings-grid">
+          <!-- 出力フォーマット選択 -->
+          <div class="setting-item">
+            <label class="setting-label">出力フォーマット</label>
+            <div class="format-button-group" role="radiogroup" aria-label="出力フォーマット">
+              <button type="button" class="format-btn active" data-format="image/webp">
+                <span class="btn-name">WebP</span>
+                <span class="btn-sub">おすすめ・高圧縮</span>
+              </button>
+              <button type="button" class="format-btn" data-format="image/jpeg">
+                <span class="btn-name">JPEG</span>
+                <span class="btn-sub">汎用写真向け</span>
+              </button>
+              <button type="button" class="format-btn" data-format="image/png">
+                <span class="btn-name">PNG</span>
+                <span class="btn-sub">可逆・透過保持</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 画質（圧縮率）調整スライダー -->
+          <div class="setting-item" id="quality-setting-item">
+            <div class="setting-label-row">
+              <label for="quality-slider" class="setting-label">画質（圧縮率）</label>
+              <span class="setting-val-display" id="quality-val-display">80%</span>
+            </div>
+            <input type="range" id="quality-slider" min="10" max="100" value="80" class="slider-input">
+            <div class="slider-ticks">
+              <span>軽量優先 (低画質)</span>
+              <span>バランス (推奨)</span>
+              <span>最高画質 (大容量)</span>
+            </div>
+          </div>
+
+          <!-- リサイズ設定 -->
+          <div class="setting-item">
+            <label class="setting-label">サイズ変更（縮小）</label>
+            <div class="resize-controls">
+              <select id="resize-mode" class="select-input" aria-label="リサイズ方式">
+                <option value="none">原寸を維持 (リサイズなし)</option>
+                <option value="scale-75">75% に縮小</option>
+                <option value="scale-50">50% に縮小（半減）</option>
+                <option value="scale-25">25% に縮小（サムネイル）</option>
+                <option value="max-width">最大幅 (px) を指定</option>
+              </select>
+
+              <div class="custom-width-wrap hidden" id="custom-width-wrap">
+                <input type="number" id="custom-width-input" min="50" max="8000" step="50" value="1200" class="number-input" placeholder="最大幅(px)">
+                <span class="input-unit">px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- EXIF・メタデータ削除オプション -->
+          <div class="setting-item exif-item">
+            <label class="checkbox-label" for="remove-exif">
+              <input type="checkbox" id="remove-exif" checked class="checkbox-input">
+              <div class="checkbox-text">
+                <span class="checkbox-title">EXIFメタデータを自動削除（推奨）</span>
+                <span class="checkbox-desc">撮影日時・位置情報（GPS）・カメラ機種情報を除去しプライバシーを保護</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 変換サマリー ＆ 一括ダウンロードバー -->
+      <section class="summary-section hidden" id="summary-section">
+        <div class="summary-card">
+          <div class="summary-left">
+            <div class="summary-stat">
+              <span class="summary-stat-label">画像総数</span>
+              <span class="summary-stat-val" id="summary-count">0 枚</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-stat">
+              <span class="summary-stat-label">元サイズ合計</span>
+              <span class="summary-stat-val" id="summary-orig-size">0 KB</span>
+            </div>
+            <div class="summary-arrow">→</div>
+            <div class="summary-stat">
+              <span class="summary-stat-label">変換後合計</span>
+              <span class="summary-stat-val highlight" id="summary-new-size">0 KB</span>
+            </div>
+            <div class="summary-savings" id="summary-savings">
+              -0%
+            </div>
+          </div>
+
+          <div class="summary-actions">
+            <button id="btn-download-all" class="action-btn primary" title="すべての変換画像をダウンロード">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>一括ダウンロード (ZIP)</span>
+            </button>
+            <button id="btn-clear-all" class="action-btn danger" title="すべての画像を消去">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+              <span>すべてクリア</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. 画像アイテムリスト（カードグリッド） -->
+      <section class="gallery-section">
+        <div class="gallery-grid" id="gallery-grid">
+          <!-- 動的にJSで画像カードを生成 -->
+        </div>
+
+        <!-- 空のプレースホルダー -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">🖼️</div>
+          <h3>まだ画像が読み込まれていません</h3>
+          <p>上のエリアに画像をドロップするか、ファイルを選択してください。<br>テストしてみたい方はサンプル画像ボタンもお試しいただけます。</p>
+          <button id="btn-load-sample" class="sample-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="M2 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="M12 22v-4"/><path d="m19.07 19.07-2.83-2.83"/><path d="M22 12h-4"/><path d="m19.07 4.93-2.83 2.83"/></svg>
+            テスト用サンプル画像を生成して試す
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- フッター -->
+    <footer class="app-footer">
+      <p>ImageCraft PRO — 高速画像リサイズ ＆ 最適化ツール &bull; 端末内処理で安心・高速</p>
+    </footer>
+  </div>
+
+  <!-- トースト通知 -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite">
+    <span class="toast-icon">✓</span>
+    <span class="toast-msg" id="toast-msg">通知メッセージ</span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

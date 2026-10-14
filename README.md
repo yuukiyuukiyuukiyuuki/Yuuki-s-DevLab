@@ -19,20 +19,26 @@
    - **プライバシーポリシー＆お問い合わせモーダル**
 
 3. **推奨フォルダ構成**
-   ポータルから各ツールへ快適にアクセスするための推奨フォルダ構成です。
+   ポータルから各ツールへ快適にアクセスするためのフォルダ構成です。
    ```text
    自作ツール/
    ├── index.html        (ポータルトップページ)
    ├── style.css         (ポータル用スタイル)
    ├── script.js         (ポータル用スクリプト)
+   ├── 404.html          (Cloudflare Pages用カスタムエラーページ)
    ├── README.md
+   ├── sync.ps1          (GitHub自動同期スクリプト)
    └── tools/
-       ├── text-metrics/ (TextMetrics PRO のファイル群)
+       ├── text-metrics/ (TextMetrics PRO: 文字数カウント＆分析)
        │   ├── index.html
        │   ├── style.css
        │   ├── script.js
        │   └── README.md
-       └── image-tools/  (今後作成するツール)
+       └── image-tools/  (ImageCraft PRO: 高速画像リサイズ＆変換)
+           ├── index.html
+           ├── style.css
+           ├── script.js
+           └── README.md
    ```
 
 ---
