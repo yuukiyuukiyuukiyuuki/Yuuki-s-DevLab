@@ -1348,14 +1348,16 @@ body {
 }
 
 /* 準備中の支援ボタン */
-.support-platform-btn.disabled {
+.support-platform-btn.disabled,
+.support-platform-btn:disabled {
   opacity: 0.55;
-  cursor: not-allowed;
-  pointer-events: none;
-  background: rgba(148, 163, 184, 0.08);
-  border-color: var(--border-color);
-  color: var(--text-dim);
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  background: rgba(148, 163, 184, 0.08) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-dim) !important;
   transform: none !important;
+  box-shadow: none !important;
 }
 
 .status-tag {

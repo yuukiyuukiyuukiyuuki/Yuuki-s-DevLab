@@ -240,18 +240,28 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
 
-      <!-- その他の支援プラットフォーム（プレースホルダー） -->
+      <!-- X（旧Twitter）での応援導線 -->
+      <div style="margin: 16px 0 20px;">
+        <a href="https://x.com/yuuki963254" target="_blank" rel="noopener noreferrer" class="support-x-btn" title="公式X (Twitter) で応援">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          <span>公式X (@yuuki963254) で感想・応援を送る</span>
+        </a>
+      </div>
+
+      <!-- その他の支援プラットフォーム（準備中） -->
       <h4 style="margin-top: 20px;">その他の支援方法</h4>
       <div class="support-grid">
-        <a href="https://www.buymeacoffee.com" target="_blank" rel="noopener noreferrer" class="support-platform-btn bmc" title="Buy Me a Coffee">
-          <span>☕ Buy Me a Coffee</span>
-        </a>
-        <a href="https://ko-fi.com" target="_blank" rel="noopener noreferrer" class="support-platform-btn kofi" title="Ko-fi">
-          <span>❤️ Ko-fi で支援</span>
-        </a>
-        <a href="https://www.amazon.co.jp/hz/wishlist/ls" target="_blank" rel="noopener noreferrer" class="support-platform-btn amazon" title="Amazon 欲しいものリスト">
-          <span>🎁 Amazon 欲しいものリスト</span>
-        </a>
+        <button type="button" class="support-platform-btn disabled" disabled title="準備中">
+          <span>☕ Buy Me a Coffee <small class="status-tag">準備中</small></span>
+        </button>
+        <button type="button" class="support-platform-btn disabled" disabled title="準備中">
+          <span>❤️ Ko-fi <small class="status-tag">準備中</small></span>
+        </button>
+        <button type="button" class="support-platform-btn disabled" disabled title="準備中">
+          <span>🎁 欲しいものリスト <small class="status-tag">準備中</small></span>
+        </button>
       </div>
       <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 14px; text-align: center;">温かいお気持ちと応援、本当にありがとうございます！✨</p>
     `);
