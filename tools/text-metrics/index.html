@@ -31,8 +31,6 @@
           <h1 class="brand-title">TextMetrics <span class="badge-pro">PRO</span></h1>
           <p class="brand-subtitle">文字数カウント ＆ リアルタイム文章分析</p>
         </div>
-      </div>
-
       <div class="header-actions">
         <!-- ポータルへ戻るリンク -->
         <a href="../../index.html" class="icon-btn" aria-label="ポータルに戻る" title="ポータルに戻る">
@@ -40,6 +38,24 @@
             <polyline points="15 18 9 12 15 6"/>
           </svg>
         </a>
+
+        <!-- 使い方ガイドボタン -->
+        <button id="guide-toggle" class="header-guide-btn" aria-label="使い方ガイド" title="使い方ガイドを表示">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span class="btn-text">使い方</span>
+        </button>
+
+        <!-- 開発者支援（投げ銭）ボタン -->
+        <button id="support-toggle" class="header-sponsor-btn" aria-label="開発者を支援" title="開発者を支援（投げ銭）">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          </svg>
+          <span class="btn-text">応援する</span>
+        </button>
 
         <!-- 目標文字数設定クイックボタン -->
         <div class="target-control">
@@ -373,10 +389,43 @@
       </section>
     </main>
 
+    <!-- 広告スペース（Google AdSense / スポンサーリンク プレースホルダー） -->
+    <section class="ad-container" aria-label="スポンサーリンク">
+      <div class="ad-label">SPONSORED</div>
+      <div class="ad-slot ad-responsive">
+        <!-- 将来Google AdSenseコードをここに貼り付け -->
+        <div class="ad-mock">
+          <span class="ad-mock-icon">📢</span>
+          <div class="ad-mock-text">
+            <span class="ad-mock-title">スポンサー広告枠（レスポンシブ）</span>
+            <span class="ad-mock-desc">※ Google AdSense等の広告タグを配置可能なエリアです</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- フッター -->
     <footer class="app-footer">
-      <p>TextMetrics — 高精度リアルタイムテキストアナライザー &bull; 入力内容はブラウザ内にのみ安全に保存されます</p>
+      <div class="app-footer-nav">
+        <a href="../../index.html">← ポータルへ戻る</a>
+        <button type="button" class="footer-link-btn" id="footer-guide-btn">使い方ガイド</button>
+        <button type="button" class="footer-link-btn" id="footer-support-btn">☕ 開発者を支援</button>
+      </div>
+      <p>TextMetrics PRO — 高精度リアルタイムテキストアナライザー &bull; 入力内容はブラウザ内にのみ安全に保存されます</p>
     </footer>
+  </div>
+
+  <!-- モーダルウィンドウ（使い方ガイド / 開発者支援） -->
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">モーダルタイトル</h3>
+        <button id="modal-close" class="modal-close-btn" aria-label="閉じる">&times;</button>
+      </div>
+      <div class="modal-content" id="modal-content">
+        <!-- 動的コンテンツ挿入 -->
+      </div>
+    </div>
   </div>
 
   <!-- トースト通知 -->

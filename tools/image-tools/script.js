@@ -517,4 +517,127 @@ document.addEventListener('DOMContentLoaded', () => {
       showToast('サンプル画像を生成・読み込みました！');
     }, 'image/png');
   });
+
+  // --- モーダル制御（使い方ガイド & 開発者支援） ---
+  const modalBackdrop = document.getElementById('modal-backdrop');
+  const modalTitle = document.getElementById('modal-title');
+  const modalContent = document.getElementById('modal-content');
+  const modalClose = document.getElementById('modal-close');
+  const guideToggle = document.getElementById('guide-toggle');
+  const supportToggle = document.getElementById('support-toggle');
+  const footerGuideBtn = document.getElementById('footer-guide-btn');
+  const footerSupportBtn = document.getElementById('footer-support-btn');
+
+  function openModal(title, html) {
+    modalTitle.textContent = title;
+    modalContent.innerHTML = html;
+    modalBackdrop.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modalBackdrop.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modalBackdrop) {
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modalBackdrop.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+
+  // 使い方ガイドモーダル
+  function showGuideModal() {
+    openModal('📖 ImageCraft PRO 使い方ガイド', `
+      <h4>1. 基本的な使い方</h4>
+      <ol style="padding-left: 20px; margin-bottom: 12px;">
+        <li>上部の点線エリア（ドロップゾーン）に画像をドラッグ＆ドロップ（またはクリックして選択）します。複数画像の一括読み込みにも対応しています。</li>
+        <li>「変換・リサイズ設定」パネルで、お好みの<strong>フォーマット（WebP / JPEG / PNG）</strong>、<strong>画質</strong>、<strong>縮小サイズ</strong>を選択します。</li>
+        <li>設定を変更すると、読み込んだ全画像が<strong>リアルタイムで再計算</strong>され、予想削減率や変換後サイズが即座にプレビューされます。</li>
+        <li>「一括ダウンロード (ZIP)」ボタンを押すと、すべての変換後画像がZIPファイルにまとまって保存されます（個別ダウンロードも可能です）。</li>
+      </ol>
+
+      <h4>2. おすすめのフォーマット選び</h4>
+      <ul>
+        <li><strong>WebP（おすすめ）</strong>: Google開発の高圧縮フォーマット。PNGやJPEGに比べて大幅にファイルサイズを削減でき、Webサイトの表示速度改善に最適です。</li>
+        <li><strong>JPEG</strong>: 写真やイラストなど一般的な用途に適した汎用フォーマットです。</li>
+        <li><strong>PNG</strong>: ロゴや透過イラストなど、透明度を維持したい場合に選択してください（可逆圧縮のため画質劣化はありません）。</li>
+      </ul>
+
+      <h4>3. EXIFメタデータ自動削除機能</h4>
+      <p>スマートフォンやデジタルカメラで撮影した写真には、撮影日時・位置情報（GPS）・機種名などの個人情報（EXIF）が含まれています。<br>
+      ImageCraft では、<strong>Canvas再描画時にこれらのメタデータを自動的に完全除去</strong>するため、SNSやブログに写真を投稿する前のプライバシー保護対策としても最適です。</p>
+
+      <h4>4. セキュリティとプライバシー</h4>
+      <p>当ツールの画像処理は、<strong>すべてお使いのブラウザ（端末メモリ）内だけで完結</strong>します。画像データがインターネット経由で外部サーバーに送信・保存されることは一切ありませんので、業務資料やプライベート写真も安心してご利用ください。</p>
+    `);
+  }
+
+  // 開発者支援（投げ銭）モーダル
+  function showSupportModal() {
+    openModal('☕ 開発者を支援（投げ銭）', `
+      <p>ImageCraft PRO をご利用いただきありがとうございます！<br>
+      当ツールは個人で開発・運営しております。もし日々の作業のお役に立てましたら、今後のサーバー維持や新機能開発の応援としてサポート（投げ銭）をいただけますと大変励みになります！</p>
+
+      <!-- PayPay 支援カード -->
+      <div class="support-card paypay-card">
+        <div class="support-card-header">
+          <div class="support-badge paypay">PayPay 送金</div>
+          <span class="support-note">100円〜応援いただけます</span>
+        </div>
+        <p class="support-card-desc">PayPayアプリの「送る」機能から、以下のID宛てにご支援いただけます。</p>
+        <div class="copy-box">
+          <span class="copy-label">PayPay ID:</span>
+          <code class="copy-value" id="paypay-id">yuuki_yuuki_pay</code>
+          <button type="button" class="copy-btn" id="btn-copy-paypay" title="IDをコピー">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+            </svg>
+            コピー
+          </button>
+        </div>
+      </div>
+
+      <!-- その他の支援プラットフォーム -->
+      <h4 style="margin-top: 20px;">その他の支援方法</h4>
+      <div class="support-grid">
+        <a href="https://www.buymeacoffee.com" target="_blank" rel="noopener noreferrer" class="support-platform-btn bmc" title="Buy Me a Coffee">
+          <span>☕ Buy Me a Coffee</span>
+        </a>
+        <a href="https://ko-fi.com" target="_blank" rel="noopener noreferrer" class="support-platform-btn kofi" title="Ko-fi">
+          <span>❤️ Ko-fi で支援</span>
+        </a>
+        <a href="https://www.amazon.co.jp/hz/wishlist/ls" target="_blank" rel="noopener noreferrer" class="support-platform-btn amazon" title="Amazon 欲しいものリスト">
+          <span>🎁 Amazon 欲しいものリスト</span>
+        </a>
+      </div>
+      <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 14px; text-align: center;">温かいお気持ちと応援、本当にありがとうございます！✨</p>
+    `);
+
+    // PayPay ID コピーボタン
+    const btnCopyPayPay = document.getElementById('btn-copy-paypay');
+    if (btnCopyPayPay) {
+      btnCopyPayPay.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText('yuuki_yuuki_pay');
+          showToast('PayPay ID (yuuki_yuuki_pay) をコピーしました！');
+        } catch (e) {
+          showToast('ID: yuuki_yuuki_pay');
+        }
+      });
+    }
+  }
+
+  if (guideToggle) guideToggle.addEventListener('click', showGuideModal);
+  if (footerGuideBtn) footerGuideBtn.addEventListener('click', showGuideModal);
+  if (supportToggle) supportToggle.addEventListener('click', showSupportModal);
+  if (footerSupportBtn) footerSupportBtn.addEventListener('click', showSupportModal);
 });

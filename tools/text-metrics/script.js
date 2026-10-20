@@ -449,6 +449,129 @@ document.addEventListener('DOMContentLoaded', () => {
     textarea.value = SAMPLE_TEXT;
   }
 
+  // --- モーダル制御（使い方ガイド & 開発者支援） ---
+  const modalBackdrop = document.getElementById('modal-backdrop');
+  const modalTitle = document.getElementById('modal-title');
+  const modalContent = document.getElementById('modal-content');
+  const modalClose = document.getElementById('modal-close');
+  const guideToggle = document.getElementById('guide-toggle');
+  const supportToggle = document.getElementById('support-toggle');
+  const footerGuideBtn = document.getElementById('footer-guide-btn');
+  const footerSupportBtn = document.getElementById('footer-support-btn');
+
+  function openModal(title, html) {
+    modalTitle.textContent = title;
+    modalContent.innerHTML = html;
+    modalBackdrop.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modalBackdrop.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (modalBackdrop) {
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modalBackdrop.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+
+  // 使い方ガイドモーダル
+  function showGuideModal() {
+    openModal('📖 TextMetrics PRO 使い方ガイド', `
+      <h4>1. 基本的な使い方</h4>
+      <p>大きなエディタエリアに文章を入力または貼り付けると、<strong>リアルタイムで文字数・行数・原稿用紙換算・読了時間が自動計算</strong>されます。</p>
+
+      <h4>2. 主なカウント指標</h4>
+      <ul>
+        <li><strong>総文字数（スペース含む）</strong>: 絵文字や異体字・サロゲートペアも1文字として正確に数えます。</li>
+        <li><strong>文字数（スペース除く）</strong>: 改行や空白・タブを除いた純粋な文章量です。</li>
+        <li><strong>原稿用紙換算</strong>: 400字詰め原稿用紙の総枚数と余り文字数（例: 2枚と50字）を表示します。</li>
+        <li><strong>読了時間の目安</strong>: 日本人の平均的な読書速度（黙読: 約600字/分、音読: 約350字/分）から所要時間を算出します。</li>
+        <li><strong>文字種類の内訳</strong>: ひらがな・カタカナ・漢字・英数字の比率をカラーバーで可視化します。</li>
+      </ul>
+
+      <h4>3. 便利機能の活用</h4>
+      <ul>
+        <li><strong>テキスト整形</strong>: 「スマート整形」を使うと、連続空白を1つにまとめ、不要な改行や行末スペースを一発で綺麗に整理できます。</li>
+        <li><strong>目標文字数</strong>: ヘッダーの「目標」欄に文字数を入力すると、進捗プログレスバーと残り文字数がリアルタイム表示されます。</li>
+        <li><strong>自動保存</strong>: 入力中の内容はブラウザ（localStorage）に自動保存されるため、タブを閉じても安全です。</li>
+      </ul>
+
+      <h4>4. セキュリティとプライバシー</h4>
+      <p>入力した文章データは<strong>100%お使いの端末（ブラウザ内）でのみ処理</strong>されます。外部サーバーに送信されることは一切ありませんので、機密原稿や個人情報を含む文章も安心してご利用いただけます。</p>
+    `);
+  }
+
+  // 開発者支援（投げ銭）モーダル
+  function showSupportModal() {
+    openModal('☕ 開発者を支援（投げ銭）', `
+      <p>TextMetrics PRO をご利用いただきありがとうございます！<br>
+      当ツールは個人で開発・運営しております。もし日々の作業のお役に立てましたら、今後のサーバー維持や新機能開発の応援としてサポート（投げ銭）をいただけますと大変励みになります！</p>
+
+      <!-- PayPay 支援カード -->
+      <div class="support-card paypay-card">
+        <div class="support-card-header">
+          <div class="support-badge paypay">PayPay 送金</div>
+          <span class="support-note">100円〜応援いただけます</span>
+        </div>
+        <p class="support-card-desc">PayPayアプリの「送る」機能から、以下のID宛てにご支援いただけます。</p>
+        <div class="copy-box">
+          <span class="copy-label">PayPay ID:</span>
+          <code class="copy-value" id="paypay-id">yuuki_yuuki_pay</code>
+          <button type="button" class="copy-btn" id="btn-copy-paypay" title="IDをコピー">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+            </svg>
+            コピー
+          </button>
+        </div>
+      </div>
+
+      <!-- その他の支援プラットフォーム -->
+      <h4 style="margin-top: 20px;">その他の支援方法</h4>
+      <div class="support-grid">
+        <a href="https://www.buymeacoffee.com" target="_blank" rel="noopener noreferrer" class="support-platform-btn bmc" title="Buy Me a Coffee">
+          <span>☕ Buy Me a Coffee</span>
+        </a>
+        <a href="https://ko-fi.com" target="_blank" rel="noopener noreferrer" class="support-platform-btn kofi" title="Ko-fi">
+          <span>❤️ Ko-fi で支援</span>
+        </a>
+        <a href="https://www.amazon.co.jp/hz/wishlist/ls" target="_blank" rel="noopener noreferrer" class="support-platform-btn amazon" title="Amazon 欲しいものリスト">
+          <span>🎁 Amazon 欲しいものリスト</span>
+        </a>
+      </div>
+      <p style="font-size: 0.78rem; color: var(--text-dim); margin-top: 14px; text-align: center;">温かいお気持ちと応援、本当にありがとうございます！✨</p>
+    `);
+
+    // PayPay ID コピーボタン
+    const btnCopyPayPay = document.getElementById('btn-copy-paypay');
+    if (btnCopyPayPay) {
+      btnCopyPayPay.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText('yuuki_yuuki_pay');
+          showToast('PayPay ID (yuuki_yuuki_pay) をコピーしました！');
+        } catch (e) {
+          showToast('ID: yuuki_yuuki_pay');
+        }
+      });
+    }
+  }
+
+  if (guideToggle) guideToggle.addEventListener('click', showGuideModal);
+  if (footerGuideBtn) footerGuideBtn.addEventListener('click', showGuideModal);
+  if (supportToggle) supportToggle.addEventListener('click', showSupportModal);
+  if (footerSupportBtn) footerSupportBtn.addEventListener('click', showSupportModal);
+
   // 初期解析の実行
   analyzeText();
   updateCursorPos();
