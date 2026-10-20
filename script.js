@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <h4>開発者について</h4>
-      <p><strong>Yuuki (悠生)</strong> — 個人開発者</p>
+      <p><strong>Yuuki</strong> — 個人開発者</p>
       <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 8px;">※ いただいたご意見やフィードバックは、今後の新機能開発やサービス改善の参考にさせていただきます。</p>
     `);
   });
