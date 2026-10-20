@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const STORAGE_KEY_THEME = 'textmetrics_theme';
 
   // --- 1. テーマ管理 ---
-  const savedTheme = localStorage.getItem(STORAGE_KEY_THEME) || 
+  const savedTheme = localStorage.getItem(STORAGE_KEY_THEME) ||
     (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
   document.documentElement.setAttribute('data-theme', savedTheme);
 
@@ -70,9 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const matchesCategory = (currentCategory === 'all' || category === currentCategory);
 
       // 検索キーワード判定
-      const matchesQuery = !query || 
-        title.includes(query) || 
-        desc.includes(query) || 
+      const matchesQuery = !query ||
+        title.includes(query) ||
+        desc.includes(query) ||
         keywords.includes(query);
 
       if (matchesCategory && matchesQuery) {
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
 
       <h4>開発者について</h4>
-      <p><strong>Yuuki (悠生)</strong> — 個人開発者 / Webクリエイター</p>
+      <p><strong>Yuuki (悠生)</strong> — 個人開発者</p>
       <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 8px;">※ いただいたご意見やフィードバックは、今後の新機能開発やサービス改善の参考にさせていただきます。</p>
     `);
   });
