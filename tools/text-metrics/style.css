@@ -1449,31 +1449,52 @@ body {
 }
 
 /* ==========================================
-   TextMetrics PRO：スマホ表示ヘッダー崩れ修正
+   TextMetrics PRO：スマホ表示ヘッダー綺麗化修正
    ========================================== */
 @media (max-width: 680px) {
+  /* ヘッダー全体を「ロゴ（上）」と「操作ボタン（下）」に完全分離 */
   .app-header {
-    flex-direction: column;
-    align-items: stretch !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
     gap: 12px !important;
   }
 
+  /* ボタン・入力欄のグループを横いっぱいに広げて綺麗に並べる */
   .header-actions {
     width: 100% !important;
-    justify-content: flex-end !important;
+    display: flex !important;
     flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
     gap: 6px !important;
   }
 
+  /* 「目標：なし字」の幅を小さくスマートに縮小 */
   .target-control {
-    flex: 1;
-    justify-content: space-between;
+    padding: 3px 8px !important;
   }
 
+  .target-input {
+    width: 45px !important; /* 入力欄をコンパクトに */
+    font-size: 0.8rem !important;
+  }
+
+  .target-label,
+  .target-unit {
+    font-size: 0.75rem !important;
+  }
+
+  /* 各ボタンの余白と文字をキュッと引き締める */
   .header-guide-btn,
   .header-sponsor-btn {
-    font-size: 0.78rem !important;
-    padding: 6px 10px !important;
+    font-size: 0.75rem !important;
+    padding: 5px 8px !important;
     white-space: nowrap !important;
+  }
+
+  /* アイコンボタン（戻る/X/テーマ切替）も少しだけ小さく調整 */
+  .icon-btn {
+    width: 36px !important;
+    height: 36px !important;
   }
 }
