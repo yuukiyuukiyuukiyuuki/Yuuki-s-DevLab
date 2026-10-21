@@ -1301,7 +1301,7 @@ body {
 }
 
 /* ==========================================
-   スマホ表示（モバイル）ヘッダー崩れ緊急修正
+   スマホ表示（モバイル）ヘッダー崩れ修正
    ========================================== */
 @media screen and (max-width: 768px) {
   .portal-header {
@@ -1319,5 +1319,44 @@ body {
   .header-sponsor-btn {
     font-size: 0.78rem;
     padding: 6px 10px;
+  }
+}
+
+/* ==========================================
+   各ツール（TextMetrics / ImageCraft）ヘッダー崩れ対応
+   ========================================== */
+@media screen and (max-width: 768px) {
+
+  /* ツールのヘッダー全体を縦並び・折り返し対応に */
+  .tool-header,
+  .app-header,
+  header {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  /* 右側のボタンエリアを折り返して綺麗に収める */
+  .header-actions,
+  .tool-actions {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    justify-content: flex-end !important;
+  }
+
+  /* ボタン内の文字サイズと余白をスマホ用に調整 */
+  .btn-guide,
+  .btn-sponsor,
+  .btn-target,
+  .header-actions button,
+  .header-actions a {
+    font-size: 0.78rem !important;
+    padding: 5px 8px !important;
+    white-space: nowrap !important;
+    /* 縦改行を防止 */
+  }
+
+  /* 目標設定などの入力欄もコンパクトに */
+  .target-input-group {
+    font-size: 0.78rem !important;
   }
 }
