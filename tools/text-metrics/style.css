@@ -298,10 +298,21 @@ body {
 }
 
 /* Theme Icon Visibility */
-[data-theme="dark"] .sun-icon { display: block; }
-[data-theme="dark"] .moon-icon { display: none; }
-[data-theme="light"] .sun-icon { display: none; }
-[data-theme="light"] .moon-icon { display: block; }
+[data-theme="dark"] .sun-icon {
+  display: block;
+}
+
+[data-theme="dark"] .moon-icon {
+  display: none;
+}
+
+[data-theme="light"] .sun-icon {
+  display: none;
+}
+
+[data-theme="light"] .moon-icon {
+  display: block;
+}
 
 /* --------------------------------------------------------------------------
    Target Progress Bar
@@ -733,11 +744,30 @@ body {
   flex-shrink: 0;
 }
 
-.card-mini-icon.violet { background: rgba(139, 92, 246, 0.15); color: var(--accent-violet); }
-.card-mini-icon.amber  { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
-.card-mini-icon.blue   { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
-.card-mini-icon.rose   { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); }
-.card-mini-icon.cyan   { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
+.card-mini-icon.violet {
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--accent-violet);
+}
+
+.card-mini-icon.amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-amber);
+}
+
+.card-mini-icon.blue {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--accent-blue);
+}
+
+.card-mini-icon.rose {
+  background: rgba(244, 63, 94, 0.15);
+  color: var(--accent-rose);
+}
+
+.card-mini-icon.cyan {
+  background: rgba(6, 182, 212, 0.15);
+  color: var(--accent-cyan);
+}
 
 .card-title {
   font-size: 0.88rem;
@@ -794,11 +824,25 @@ body {
   transition: width var(--trans-base);
 }
 
-.bar-segment.hiragana { background-color: #6366f1; }
-.bar-segment.katakana { background-color: #06b6d4; }
-.bar-segment.kanji    { background-color: #10b981; }
-.bar-segment.latin    { background-color: #f59e0b; }
-.bar-segment.other    { background-color: #94a3b8; }
+.bar-segment.hiragana {
+  background-color: #6366f1;
+}
+
+.bar-segment.katakana {
+  background-color: #06b6d4;
+}
+
+.bar-segment.kanji {
+  background-color: #10b981;
+}
+
+.bar-segment.latin {
+  background-color: #f59e0b;
+}
+
+.bar-segment.other {
+  background-color: #94a3b8;
+}
 
 .breakdown-legend {
   display: grid;
@@ -821,11 +865,25 @@ body {
   flex-shrink: 0;
 }
 
-.legend-indicator.hiragana { background-color: #6366f1; }
-.legend-indicator.katakana { background-color: #06b6d4; }
-.legend-indicator.kanji    { background-color: #10b981; }
-.legend-indicator.latin    { background-color: #f59e0b; }
-.legend-indicator.other    { background-color: #94a3b8; }
+.legend-indicator.hiragana {
+  background-color: #6366f1;
+}
+
+.legend-indicator.katakana {
+  background-color: #06b6d4;
+}
+
+.legend-indicator.kanji {
+  background-color: #10b981;
+}
+
+.legend-indicator.latin {
+  background-color: #f59e0b;
+}
+
+.legend-indicator.other {
+  background-color: #94a3b8;
+}
 
 .legend-name {
   color: var(--text-muted);
@@ -900,6 +958,7 @@ body {
     opacity: 0;
     transform: translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -911,6 +970,7 @@ body {
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1144,8 +1204,15 @@ body {
 }
 
 @keyframes modalPop {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .modal-header {
@@ -1317,9 +1384,20 @@ body {
   transform: translateY(-2px);
 }
 
-.support-platform-btn.bmc:hover { color: #f59e0b; border-color: #f59e0b; }
-.support-platform-btn.kofi:hover { color: #ef4444; border-color: #ef4444; }
-.support-platform-btn.amazon:hover { color: #f97316; border-color: #f97316; }
+.support-platform-btn.bmc:hover {
+  color: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.support-platform-btn.kofi:hover {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.support-platform-btn.amazon:hover {
+  color: #f97316;
+  border-color: #f97316;
+}
 
 /* X (Twitter) 応援ボタン */
 .support-x-btn {
@@ -1370,4 +1448,32 @@ body {
   margin-left: 4px;
 }
 
+/* ==========================================
+   TextMetrics PRO：スマホ表示ヘッダー崩れ修正
+   ========================================== */
+@media (max-width: 680px) {
+  .app-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
 
+  .header-actions {
+    width: 100% !important;
+    justify-content: flex-end !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  .target-control {
+    flex: 1;
+    justify-content: space-between;
+  }
+
+  .header-guide-btn,
+  .header-sponsor-btn {
+    font-size: 0.78rem !important;
+    padding: 6px 10px !important;
+    white-space: nowrap !important;
+  }
+}
