@@ -1478,4 +1478,27 @@ body {
   margin-left: 4px;
 }
 
+/* ==========================================
+   ImageCraft PRO：スマホ表示ヘッダー崩れ修正
+   ========================================== */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
 
+  .header-actions {
+    width: 100% !important;
+    justify-content: flex-end !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  .header-guide-btn,
+  .header-sponsor-btn {
+    font-size: 0.78rem !important;
+    padding: 6px 10px !important;
+    white-space: nowrap !important;
+  }
+}
